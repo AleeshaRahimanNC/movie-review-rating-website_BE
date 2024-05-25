@@ -6,11 +6,23 @@ var logger = require('morgan');
 const cors=require('cors');
 const dotenv=require('dotenv');
 dotenv.config();
+const connectDB = require('./config/db');
 
-var indexRouter = require('./routes/admin');
-var usersRouter = require('./routes/users');
+// Import routes
+const adminRouter = require('./routes/admin'); 
+const usersRouter = require('./routes/users');
+const authRouter = require('./routes/authRoutes');
+const movieRouter = require('./routes/movieRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 
-var app = express();
+const app = express();
+connectDB();
+
+app.use(cors({
+  origin:['http://localhost:3000']
+}));
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,8 +34,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/admin', adminRouter);
 app.use('/users', usersRouter);
+app.use('/authRoutes', authRouter);
+app.use('/movieRoutes', movieRouter);
+app.use('/reviewRoutes', reviewRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
