@@ -83,36 +83,36 @@ The following packages are used in this project:
 
 The project is structured as follows:
 
-├── bin
-├── config
-│ └── db.js
-├── controllers
-│ ├── authController.js
-│ ├── movieController.js
-│ └── reviewController.js
-├── middleware
-│ └── authMiddleware.js
-├── models
-│ ├── movieModel.js
-│ ├── reviewModel.js
-│ └── userModel.js
-├── routes
-│ ├── admin.js
-│ ├── authRoutes.js
-│ ├── movieRoutes.js
-│ ├── reviewRoutes.js
-│ └── users.js
-├── public
-│ ├── images
-│ ├── javascripts
-│ └── stylesheets
-├── views
-├── .env
-├── .gitignore
-├── app.js
-├── package-lock.json
-├── package.json
-└── README.md
+         ├── bin
+         ├── config
+         │ └── db.js
+         ├── controllers
+         │ ├── authController.js
+         │ ├── movieController.js
+         │ └── reviewController.js
+         ├── middleware
+         │ └── authMiddleware.js
+         ├── models
+         │ ├── movieModel.js
+         │ ├── reviewModel.js
+         │ └── userModel.js
+         ├── routes
+         │ ├── admin.js
+         ├── authRoutes.js
+         │ ├── movieRoutes.js
+         │ ├── reviewRoutes.js
+         │ └── users.js
+         ├── public
+         │ ├── images
+         │ ├── javascripts
+         │ └── stylesheets
+         ├── views
+         ├── .env
+         ├── .gitignore
+         ├── app.js
+         ├── package-lock.json
+         ├── package.json
+         └── README.md
 
 ### Description of Folders and Files
 
