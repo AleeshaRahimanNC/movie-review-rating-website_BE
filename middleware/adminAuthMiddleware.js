@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const authMiddleware = (req, res, next) => {
+const adminAuthMiddleware = (req, res, next) => {
     const token = req.header('Authorization');
 
     if (!token || !token.startsWith('Bearer ')) {
@@ -11,6 +11,9 @@ const authMiddleware = (req, res, next) => {
     try {
         const decoded = jwt.verify(tokenWithoutBearer, process.env.JWT_PASSWORD);
         console.log('Decoded token:', decoded); // Add this line for debugging
+        if (decoded.role !== 'admin') {
+            return res.status(403).json({ message: 'User is not authorized to access this resource' });
+        }
         req.user = decoded;
         next();
     } catch (err) {
@@ -19,5 +22,5 @@ const authMiddleware = (req, res, next) => {
     }
 };
 
-module.exports = authMiddleware;
+module.exports = adminAuthMiddleware;
 
