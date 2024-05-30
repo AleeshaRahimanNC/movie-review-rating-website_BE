@@ -1,6 +1,9 @@
+// Importing Mongoose
 const mongoose = require('mongoose');
 
+// Defining Review Schema
 const reviewSchema = mongoose.Schema({
+    // Schema definition properties
     movieId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Movie',
@@ -30,7 +33,9 @@ const reviewSchema = mongoose.Schema({
     },
 });
 
+// Creating Review Model
 const Review = mongoose.model('Review', reviewSchema);
 
+// Exporting Review Model
 module.exports = Review;
 

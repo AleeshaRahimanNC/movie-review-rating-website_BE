@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 
 // User Registration Handler
 const doRegister = (req, res) => {
+  // Password Hashing
   bcrypt.hash(
     req.body.password,
     parseInt(process.env.SALT_ROUNDS), // Using SALT_ROUNDS from .env file
@@ -45,24 +46,29 @@ const doLogin = async (req, res) => {
     const { email, password } = req.body;
     const userData = await USERS.findOne({ email: email });
 
+    // Check if user exists in the database
     if (!userData) {
       return res.status(401).json({ message: "Invalid Credentials" });
     }
 
+    // Compare passwords
     bcrypt.compare(password, userData.password, (err, result) => {
       if (result) {
+        
         userData.password = undefined; // Removing password from the user object
         const token = jwt.sign(
           { ...userData.toJSON() }, // Convert to plain JavaScript object
           process.env.JWT_PASSWORD, // Secret key from environment variables
-          { expiresIn: "2d" }
+          { expiresIn: "2d" } // Token expiration time
         );
         res.status(200).json({ user: userData, token });
       } else {
+        // If password does not match, return error
         res.status(401).json({ message: "Invalid Credentials" });
       }
     });
   } catch (error) {
+    // Catch and handle any errors
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }

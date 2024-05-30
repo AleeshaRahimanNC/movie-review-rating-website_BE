@@ -1,7 +1,9 @@
+// Importing Mongoose
 const mongoose = require('mongoose');
 
 // Define the user schema with Mongoose
 const userSchema = mongoose.Schema({
+    // Schema definition properties
     name: {
         type: String,
         required: true,
@@ -34,4 +36,5 @@ const userSchema = mongoose.Schema({
 // Create a Mongoose model named 'users' based on the userSchema
 const users = mongoose.model('users', userSchema);
 
+// Exporting users Model
 module.exports = users;

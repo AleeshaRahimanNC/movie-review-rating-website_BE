@@ -1,6 +1,9 @@
+// Importing Mongoose
 const mongoose = require('mongoose');
 
+// Defining Movie Schema
 const movieSchema = mongoose.Schema({
+    // Schema definition properties
     title: {
         type: String,
         required: true,
@@ -39,7 +42,9 @@ const movieSchema = mongoose.Schema({
     },
 });
 
+// Creating Movie Model
 const Movie = mongoose.model('Movie', movieSchema);
 
+// Exporting Movie Model
 module.exports = Movie;
 
