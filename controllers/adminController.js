@@ -1,5 +1,9 @@
-// Import user database
+// Import Mongoose
+const mongoose = require('mongoose');
+
+// Import user & review models
 const User = require("../models/userModel");
+const Review = require("../models/reviewModel");
 
 const getDashboardData = async (req, res) => {
   try {
@@ -15,12 +19,33 @@ const getDashboardData = async (req, res) => {
     // Count the total number of recent users (this will be the length of recentUsers array)
     const recentUsersCount = recentUsers.length;
 
+    // Format the total users data for response with serial numbers
+    const formattedTotalUsers = totalUsers.map((user, index) => ({
+      serialNo: index + 1,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+      status: user.status,
+    }));
+
+    // Format the recent users data for response with serial numbers
+    const formattedRecentUsers = recentUsers.map((user, index) => ({
+      serialNo: index + 1,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+      status: user.status,
+    }));
+
+
     // Send the data as a JSON response
     res.status(200).json({
       totalUsersCount,
       recentUsersCount,
-      recentUsers,
-      totalUsers,
+      recentUsers: formattedRecentUsers,
+      totalUsers: formattedTotalUsers
     });
   } catch (error) {
     // Handle any errors that occur
@@ -80,4 +105,41 @@ const reactivateUser = async (req, res) => {
   }
 };
 
-module.exports = { getDashboardData, deleteUser, reactivateUser };
+// Get user reviews
+const getUserReviews = async (req, res) => {
+  try {
+    // Extract the user ID from the request parameters
+    const userId = req.params.id;
+
+    // Validate the user ID
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
+
+    // Find the reviews for the given user ID
+    const reviews = await Review.find({ userId }).populate('movieId', 'title');
+
+    // Check if reviews exist for the user
+    if (!reviews.length) {
+      return res.status(404).json({ message: "No reviews found for this user" });
+    }
+
+    // Format the review data for response
+    const formattedReviews = reviews.map((review, index) => ({
+      serialNo: index + 1,
+      movieName: review.movieId.title,
+      review: review.reviewText,
+      rating: review.rating,
+    }));
+
+    // Send the data as a JSON response
+    res.status(200).json(formattedReviews);
+  } catch (error) {
+    console.error("Error fetching user reviews:", error); // Log the error for debugging
+    // Handle any errors that occur
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+module.exports = { getDashboardData, deleteUser, reactivateUser, getUserReviews };
