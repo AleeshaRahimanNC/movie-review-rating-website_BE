@@ -4,14 +4,21 @@ const Movie = require("../models/movieModel");
 
 // Adding new Reviews
 const addReview = async (req, res) => {
-  const { movieId, reviewText, rating } = req.body;
+  const { movieId, title, reviewText, rating } = req.body;
   const userId = req.user._id;
 
-  // Creating and Saving a New Review
   try {
+    // Check if the user has already reviewed the movie
+    const existingReview = await Review.findOne({ movieId, userId });
+    if (existingReview) {
+      return res.status(400).json({ message: "User has already reviewed this movie" });
+    }
+
+    // Creating and Saving a New Review
     const newReview = new Review({
       movieId,
       userId,
+      title,
       reviewText,
       rating,
     });
@@ -19,14 +26,19 @@ const addReview = async (req, res) => {
 
     // Fetching and Validating the Movie
     const movie = await Movie.findById(movieId);
-    if (!movie) return res.status(404).json({ message: "Movie not found" });
-
-    // Updating the Aggregated Rating
-    if (movie.aggregatedRating > 0) {
-      movie.aggregatedRating = (movie.aggregatedRating + rating) / 2;
-    } else {
-      movie.aggregatedRating = rating;
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" });
     }
+
+    // Update the Aggregated Rating
+    const reviews = await Review.find({ movieId });
+    const totalRatings = reviews.reduce((sum, review) => sum + review.rating, 0);
+    const aggregatedRating = totalRatings / reviews.length;
+
+    // Round the aggregatedRating to one decimal place
+    const roundedRating = Math.round(aggregatedRating * 10) / 10;
+
+    movie.aggregatedRating = roundedRating;
     await movie.save();
 
     // Sending Response and Error Handling
@@ -60,24 +72,37 @@ const getReviewsByMovieId = async (req, res) => {
 
 // Deleting a Review
 const deleteReview = async (req, res) => {
-  // extract reviewId from the request parameter
+  // Extract reviewId from the request parameter
   const { id } = req.params;
 
-  // Updating the Review's Status
   try {
-    const deletedReview = await Review.findByIdAndUpdate(
-      id,
-      { status: "deleted" },
-      { new: true }
-    );
-
-    // Handling the Case Where the Review is Not Found
-    if (!deletedReview)
+    // Find the review to be deleted
+    const reviewToDelete = await Review.findById(id);
+    if (!reviewToDelete) {
       return res.status(404).json({ message: "Review not found" });
+    }
 
-    // Sending the Response
+    // Mark the review status as deleted
+    reviewToDelete.status = "deleted";
+    await reviewToDelete.save();
+
+    // Update the aggregated rating for the movie
+    const movieId = reviewToDelete.movieId;
+    const reviews = await Review.find({ movieId, status: "active" });
+
+    if (reviews.length > 0) {
+      const totalRatings = reviews.reduce((sum, review) => sum + review.rating, 0);
+      const aggregatedRating = totalRatings / reviews.length;
+      await Movie.findByIdAndUpdate(movieId, { aggregatedRating });
+    } else {
+      // If no active reviews left, set the aggregated rating to 0
+      await Movie.findByIdAndUpdate(movieId, { aggregatedRating: 0 });
+    }
+
+    // Sending the response
     res.status(200).json({ message: "Review deleted successfully" });
   } catch (error) {
+    console.error("Error deleting review:", error); // Log error for debugging
     res.status(500).json({ message: "Something went wrong" });
   }
 };

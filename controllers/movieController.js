@@ -91,8 +91,30 @@ const getMovieById = async (req, res) => {
   }
 };
 
+// Get Top Rated Movies
+const getTopRatedMovies = async (req, res) => {
+  try {
+    // Find the top 3 movies based on aggregatedRating
+    const topMovies = await Movie.find().sort({ aggregatedRating: -1 }).limit(3);
+    
+    // Check if there are any top-rated movies
+    if (topMovies.length === 0) {
+      return res.status(404).json({ message: "No top-rated movies found" });
+    }
+
+    // Return the top-rated movies
+    res.status(200).json(topMovies);
+  } catch (error) {
+    console.error('Error fetching top rated movies:', error);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+
+
 module.exports = {
   addMovie,
   getMovies,
   getMovieById,
+  getTopRatedMovies
 };
