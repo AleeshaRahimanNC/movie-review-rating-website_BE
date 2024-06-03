@@ -11,7 +11,6 @@ const connectDB = require('./config/db');// Import database connection function
 
 // Import route handlers
 const adminRouter = require('./routes/adminRoutes'); 
-const usersRouter = require('./routes/users');
 const authRouter = require('./routes/authRoutes');
 const movieRouter = require('./routes/movieRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
@@ -40,7 +39,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Define routes
 app.use('/adminRoutes', adminRouter);
-app.use('/users', usersRouter);
 app.use('/authRoutes', authRouter);
 app.use('/movieRoutes', movieRouter);
 app.use('/reviewRoutes', reviewRouter);

@@ -85,23 +85,26 @@ The project is structured as follows:
 
          ├── bin
          ├── config
+         │ ├──cloudinaryConfig.js
          │ └── db.js
          ├── controllers
+         │ ├── adminController.js
          │ ├── authController.js
          │ ├── movieController.js
          │ └── reviewController.js
          ├── middleware
-         │ └── authMiddleware.js
+         │ ├── adminAuthMiddleware.js
+         │ ├── authMiddleware.js
+         │ └── multer.js
          ├── models
          │ ├── movieModel.js
          │ ├── reviewModel.js
          │ └── userModel.js
          ├── routes
-         │ ├── admin.js
-         ├── authRoutes.js
+         │ ├── adminRoutes.js
+         │ ├── authRoutes.js
          │ ├── movieRoutes.js
          │ ├── reviewRoutes.js
-         │ └── users.js
          ├── public
          │ ├── images
          │ ├── javascripts
@@ -119,22 +122,25 @@ The project is structured as follows:
 - **bin**: Contains the script to start the server.
 - **config**: Contains configuration files.
   - `db.js`: Handles the connection to MongoDB.
+  - `cloudinaryConfig.js`:Configuration file for setting up the Cloudinary service, which is used for handling image uploads.
 - **controllers**: Contains controllers for handling requests and business logic.
+  - `adminController.js`: Handles administrative tasks and operations.
   - `authController.js`: Handles authentication-related operations.
   - `movieController.js`: Handles movie-related operations.
   - `reviewController.js`: Handles review-related operations.
 - **middleware**: Contains middleware functions.
+  - `adminAuthMiddleware.js`: Middleware for authenticating administrative users.
   - `authMiddleware.js`: Middleware for handling authentication and authorization.
+  - `multer.js`: Middleware for handling file uploads using Multer.
 - **models**: Contains Mongoose models.
   - `movieModel.js`: Mongoose schema and model for movies.
   - `reviewModel.js`: Mongoose schema and model for reviews.
   - `userModel.js`: Mongoose schema and model for users.
 - **routes**: Contains route definitions.
-  - `admin.js`: Routes for admin operations.
+  - `adminRoutes.js`: Routes for admin operations.
   - `authRoutes.js`: Routes for authentication.
   - `movieRoutes.js`: Routes for movie operations.
   - `reviewRoutes.js`: Routes for review operations.
-  - `users.js`: Routes for user operations.
 - **public**: Contains static files (e.g., images, JavaScript, CSS).
 - **views**: Contains view templates.
 - **.env**: Environment variables file.

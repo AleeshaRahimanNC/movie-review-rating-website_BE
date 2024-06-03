@@ -9,6 +9,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.post('/addMovie', adminAuthMiddleware, upload, addMovie);
 router.get('/', authMiddleware, getMovies); // All authenticated users can get movies
 router.get('/:id', authMiddleware, getMovieById); // All authenticated users can get movies by its Id
-router.get('/top-rated', getTopRatedMovies); // Publicly accessible
+router.get('/topRatedMovies', authMiddleware, getTopRatedMovies); // All authenticated users can get TopRatedMovies.
 
 module.exports = router;
