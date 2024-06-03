@@ -61,25 +61,30 @@ const addMovie = async (req, res) => {
 
 // Retrieving All Movies
 const getMovies = async (req, res) => {
-  // This getMovies declares an asynchronous function
   try {
-    const genre = req.query.genre; // Get the genre from query parameters
+    const genre = req.query.genre; // Extract genre from query parameters
 
-    // Initializes an empty query object. This object will be used to build the query for fetching movies from the database.
-    let query = {}; 
+    // Initialize an empty query object
+    let query = {};
 
-    // Adding Genre Filter to Query
-    if (genre) {
-      query.genre = { $in: [genre] }; // Use $in operator to filter movies by genre
+    // Add genre filter to query if a specific genre is provided and it's not 'top-rated'
+    if (genre && genre !== 'top-rated') {
+      query.genre = { $in: [genre] };
     }
 
-    // await Movie.find() uses Mongoose to find all documents in the Movie collection.
-    const movies = await Movie.find(query);
+    let movies;
+    // Fetch top 3 rated movies if 'top-rated' query is provided
+    if (genre === 'top-rated') {
+      movies = await Movie.find().sort({ aggregatedRating: -1 }).limit(3).select('title moviePic aggregatedRating');
+    } else {
+      // Fetch all movies or movies filtered by genre
+      movies = await Movie.find(query).sort({ aggregatedRating: -1 });
+    }
 
-    // Sending the Response
+    // Send the response with the retrieved movies
     res.status(200).json(movies);
   } catch (error) {
-    // Error Handling
+    // Handle errors
     res.status(500).json({ message: "Something went wrong", error: error.message });
   }
 };
@@ -102,35 +107,9 @@ const getMovieById = async (req, res) => {
   }
 };
 
-// Get top 3 rated movies
-const getTopRatedMovies = async (req, res) => {
-  try {
-    console.log("Starting getTopRatedMovies function...");
-
-    // Make sure to await the database operation to complete before sending the response
-    const topRatedMovies = await Movie.find()
-      .sort({ aggregatedRating: -1 })
-      .limit(3)
-      .select('moviePic title aggregatedRating'); // Project only the fields you need
-
-      if (!topRatedMovies || topRatedMovies.length === 0) {
-        // If no movies found, send a 404 response
-        console.log("No top rated movies found");
-        return res.status(404).json({ message: "No top rated movies found" });
-      }
-
-    console.log("Top Rated Movies:", topRatedMovies); // Log the top rated movies  
-
-    res.status(200).json(topRatedMovies);
-  } catch (error) {
-    console.error("Error fetching top rated movies:", error);
-    res.status(500).json({ message: "Something went wrong" });
-  }
-};
 
 module.exports = {
   addMovie,
   getMovies,
-  getMovieById,
-  getTopRatedMovies
+  getMovieById
 };
