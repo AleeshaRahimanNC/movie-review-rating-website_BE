@@ -85,7 +85,7 @@ The project is structured as follows:
 
          ├── bin
          ├── config
-         │ ├──cloudinaryConfig.js
+         │ ├── cloudinaryConfig.js
          │ └── db.js
          ├── controllers
          │ ├── adminController.js
