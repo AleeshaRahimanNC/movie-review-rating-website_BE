@@ -90,14 +90,18 @@ const deleteReview = async (req, res) => {
     const movieId = reviewToDelete.movieId;
     const reviews = await Review.find({ movieId, status: "active" });
 
+    let aggregatedRating;
     if (reviews.length > 0) {
       const totalRatings = reviews.reduce((sum, review) => sum + review.rating, 0);
-      const aggregatedRating = totalRatings / reviews.length;
-      await Movie.findByIdAndUpdate(movieId, { aggregatedRating });
+      aggregatedRating = totalRatings / reviews.length;
+      // Round the aggregatedRating to one decimal place
+      aggregatedRating = Math.round(aggregatedRating * 10) / 10;
     } else {
       // If no active reviews left, set the aggregated rating to 0
-      await Movie.findByIdAndUpdate(movieId, { aggregatedRating: 0 });
+      aggregatedRating = 0;
     }
+    
+    await Movie.findByIdAndUpdate(movieId, { aggregatedRating });
 
     // Sending the response
     res.status(200).json({ message: "Review deleted successfully" });
