@@ -51,7 +51,7 @@ const doLogin = async (req, res) => {
       return res.status(401).json({ message: "Invalid Credentials" });
     }
 
-    // Check if user status is 'Inactive' or 'Banned' (case insensitive)
+    // Check if user status is 'inactive' or 'banned' 
    
     if (userData.status === "inactive" || userData.status === "banned") {
       return res
