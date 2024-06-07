@@ -51,6 +51,16 @@ const doLogin = async (req, res) => {
       return res.status(401).json({ message: "Invalid Credentials" });
     }
 
+    // Check if user status is 'Inactive' or 'Banned' (case insensitive)
+   
+    if (userData.status === "inactive" || userData.status === "banned") {
+      return res
+        .status(403)
+        .json({
+          message: `Account is ${userData.status}. Please contact support.`,
+        });
+    }
+
     // Compare passwords
     bcrypt.compare(password, userData.password, (err, result) => {
       if (result) {
@@ -73,7 +83,6 @@ const doLogin = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
 
 module.exports = {
   doRegister,

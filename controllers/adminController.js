@@ -63,7 +63,7 @@ const deleteUser = async (req, res) => {
         const { status } = req.body;
 
         // Validate the status
-        if (status !== 'Banned' && status !== 'Inactive') {
+        if (status !== 'banned' && status !== 'inactive') {
             return res.status(400).json({ message: "Invalid status provided" });
         }
 
