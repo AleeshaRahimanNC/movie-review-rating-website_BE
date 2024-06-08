@@ -63,6 +63,7 @@ const addMovie = async (req, res) => {
 const getMovies = async (req, res) => {
   try {
     const genre = req.query.genre; // Extract genre from query parameters
+    const category = req.query.category; // Extract category from query parameters
 
     // Initialize an empty query object
     let query = {};
@@ -70,6 +71,11 @@ const getMovies = async (req, res) => {
     // Add genre filter to query if a specific genre is provided and it's not 'top-rated'
     if (genre && genre !== 'top-rated') {
       query.genre = { $in: [genre] };
+    }
+
+    // Add category filter to query if a specific category is provided
+    if (category) {
+      query.category = category;
     }
 
     let movies;
