@@ -65,6 +65,16 @@ The following packages are used in this project:
     npm i dotenv
     ```
 
+9. **Cloudinary**: Library for uploading files to Cloudinary
+    ```bash
+    npm install cloudinary
+    ```
+
+10. **UUID**: Unique filenames for the images uploaded to Cloudinary.
+    ```bash
+    npm install uuid
+    ```
+
 ## Usage
 
 1. Create a `.env` file in the root directory and add your environment variables. For example:
