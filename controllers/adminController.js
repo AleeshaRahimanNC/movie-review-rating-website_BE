@@ -124,9 +124,7 @@ const getUserReviews = async (req, res) => {
 
     // Check if reviews exist for the user
     if (!reviews.length) {
-      return res
-        .status(404)
-        .json({ message: "No reviews found for this user" });
+      return res.status(404).json({ message: "No reviews found for this user" });
     }
 
     // Format the review data for response
