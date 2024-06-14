@@ -22,6 +22,7 @@ const getDashboardData = async (req, res) => {
     // Format the total users data for response with serial numbers
     const formattedTotalUsers = totalUsers.map((user, index) => ({
       serialNo: index + 1,
+      _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
@@ -32,6 +33,7 @@ const getDashboardData = async (req, res) => {
     // Format the recent users data for response with serial numbers
     const formattedRecentUsers = recentUsers.map((user, index) => ({
       serialNo: index + 1,
+      _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
