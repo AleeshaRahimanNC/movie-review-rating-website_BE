@@ -1,5 +1,5 @@
 // Import Mongoose
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // Import user & review models
 const User = require("../models/userModel");
@@ -41,13 +41,12 @@ const getDashboardData = async (req, res) => {
       status: user.status,
     }));
 
-
     // Send the data as a JSON response
     res.status(200).json({
       totalUsersCount,
       recentUsersCount,
       recentUsers: formattedRecentUsers,
-      totalUsers: formattedTotalUsers
+      totalUsers: formattedTotalUsers,
     });
   } catch (error) {
     // Handle any errors that occur
@@ -57,27 +56,29 @@ const getDashboardData = async (req, res) => {
 
 // Deleting a userDetails
 const deleteUser = async (req, res) => {
-    try {
-        // Extract the user ID from the request parameters
-        const userId = req.params.id;
+  try {
+    // Extract the user ID from the request parameters
+    const userId = req.params.id;
 
-        // Extract the status from the request body (either 'banned' or 'inactive')
-        const { status } = req.body;
+    // Extract the status from the request body (either 'banned' or 'inactive')
+    const { status } = req.body;
 
-        // Validate the status
-        if (status !== 'banned' && status !== 'inactive') {
-            return res.status(400).json({ message: "Invalid status provided" });
-        }
-
-        // Update the user's status in the database
-        await User.findByIdAndUpdate(userId, { status });
-
-        // Send a success message as a JSON response
-        res.status(200).json({ message: `User status updated to ${status} successfully` });
-    } catch (error) {
-        // Handle any errors that occur
-        res.status(500).json({ message: "Internal Server Error" });
+    // Validate the status
+    if (status !== "banned" && status !== "inactive") {
+      return res.status(400).json({ message: "Invalid status provided" });
     }
+
+    // Update the user's status in the database
+    await User.findByIdAndUpdate(userId, { status });
+
+    // Send a success message as a JSON response
+    res
+      .status(200)
+      .json({ message: `User status updated to ${status} successfully` });
+  } catch (error) {
+    // Handle any errors that occur
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 // Function to reactivate a user
@@ -91,19 +92,19 @@ const reactivateUser = async (req, res) => {
 
     // Check if the user exists
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Update the user's status to 'active' from "inactive" or "banned"
-    user.status = 'active';
+    user.status = "active";
     await user.save();
 
     // Send a success message as a JSON response
-    res.status(200).json({ message: 'User reactivated successfully', user });
+    res.status(200).json({ message: "User reactivated successfully", user });
   } catch (error) {
-    // Handle any errors that occur 
+    // Handle any errors that occur
     console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -119,17 +120,21 @@ const getUserReviews = async (req, res) => {
     }
 
     // Find the reviews for the given user ID
-    const reviews = await Review.find({ userId }).populate('movieId', 'title');
+    const reviews = await Review.find({ userId }).populate("movieId", "title");
 
     // Check if reviews exist for the user
     if (!reviews.length) {
-      return res.status(404).json({ message: "No reviews found for this user" });
+      return res
+        .status(404)
+        .json({ message: "No reviews found for this user" });
     }
 
     // Format the review data for response
     const formattedReviews = reviews.map((review, index) => ({
       serialNo: index + 1,
+      _id: review._id,
       movieName: review.movieId.title,
+      title: review.title,
       review: review.reviewText,
       rating: review.rating,
     }));
@@ -143,5 +148,9 @@ const getUserReviews = async (req, res) => {
   }
 };
 
-
-module.exports = { getDashboardData, deleteUser, reactivateUser, getUserReviews };
+module.exports = {
+  getDashboardData,
+  deleteUser,
+  reactivateUser,
+  getUserReviews,
+};
