@@ -123,7 +123,7 @@ const getUserReviews = async (req, res) => {
     const reviews = await Review.find({ userId }).populate("movieId", "title");
 
     // Check if reviews exist for the user
-    if (!reviews.length) {
+    if (reviews.length===0) {
       return res.status(404).json({ message: "No reviews found for this user" });
     }
 
@@ -135,6 +135,7 @@ const getUserReviews = async (req, res) => {
       title: review.title,
       review: review.reviewText,
       rating: review.rating,
+      status: review.status,
     }));
 
     // Send the data as a JSON response

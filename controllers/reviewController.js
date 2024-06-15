@@ -57,7 +57,9 @@ const getReviewsByMovieId = async (req, res) => {
   // Fetching Reviews
   try {
     // Fetch Reviews Excluding Deleted Ones
-    const reviews = await Review.find({ movieId, status:{ $ne: 'deleted' }});
+    const reviews = await Review.find({ movieId, status:{ $ne: 'deleted' }})
+    .populate('userId', 'name') // Populate user's name from 'users' collection
+    .exec();
 
     if (reviews.length === 0) {
       return res.status(200).json({ message: "No reviews added yet. Be the first to add a review!" });
