@@ -19,10 +19,9 @@ const reviewRouter = require('./routes/reviewRoutes');
 const app = express();
 connectDB();
 
+//origin:['http://localhost:3000']
 // Middleware Configuration
-app.use(cors({
-  origin:['http://localhost:3000']
-}));
+app.use(cors());
 
 
 
