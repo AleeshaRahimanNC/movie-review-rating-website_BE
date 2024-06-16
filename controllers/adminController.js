@@ -68,13 +68,26 @@ const deleteUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid status provided" });
     }
 
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    // Check if the user exists
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Extract the user's name
+    const userName = user.name;
+
     // Update the user's status in the database
     await User.findByIdAndUpdate(userId, { status });
 
     // Send a success message as a JSON response
     res
       .status(200)
-      .json({ message: `User status updated to ${status} successfully` });
+      .json({
+        message: `${userName}'s status updated to ${status} successfully`,
+      });
   } catch (error) {
     // Handle any errors that occur
     res.status(500).json({ message: "Internal Server Error" });
@@ -95,12 +108,15 @@ const reactivateUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Extract the user's name
+    const userName = user.name;
+
     // Update the user's status to 'active' from "inactive" or "banned"
     user.status = "active";
     await user.save();
 
     // Send a success message as a JSON response
-    res.status(200).json({ message: "User reactivated successfully", user });
+    res.status(200).json({ message: `${userName} has been reactivated successfully`, user });
   } catch (error) {
     // Handle any errors that occur
     console.error(error);
@@ -123,8 +139,10 @@ const getUserReviews = async (req, res) => {
     const reviews = await Review.find({ userId }).populate("movieId", "title");
 
     // Check if reviews exist for the user
-    if (reviews.length===0) {
-      return res.status(404).json({ message: "No reviews found for this user" });
+    if (reviews.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No reviews found for this user" });
     }
 
     // Format the review data for response
